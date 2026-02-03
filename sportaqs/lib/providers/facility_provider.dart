@@ -158,7 +158,7 @@ class FacilityProvider extends ChangeNotifier{
   }
 
   Future<void> updateFacility(int id, String name, String openTime, String closeTime, String location) async {
-        try{
+    try{
       isLoading = true;
       errorMessage = null;
       notifyListeners();
