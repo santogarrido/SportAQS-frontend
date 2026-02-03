@@ -17,7 +17,7 @@ class CourtProvider extends ChangeNotifier{
   //TODO 
   // CourtProvider(this.userProvider); 
 
-  List<Court> getCourts() async {
+  Future<Court> getCourts(int id) async {
 
     try{
       isLoading = true;
