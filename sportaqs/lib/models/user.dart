@@ -22,8 +22,10 @@ class User {
   });
 
   factory User.fromLoginJson(Map<String, dynamic> json) => User(
+    id: json['id'],
     username: json['username'],
-    token: json['token']
+    role: json['role'],
+    token: json['token'],
   );
 
   factory User.fromRegisterJson(Map<String, dynamic> json) => User(
