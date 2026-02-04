@@ -123,7 +123,7 @@ class CourtProvider extends ChangeNotifier{
         return;
       }
 
-      CourtsResponse response = await _courtService.updateCourt(id, name, category, bookingDuration, facilityId, token)
+      CourtsResponse response = await _courtService.updateCourt(id, name, category, bookingDuration, facilityId, token);
       if(response.success == true){
         courts = response.data;
       }else{

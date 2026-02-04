@@ -1,47 +1,47 @@
 class User {
-  int id;
-  String name;
+  int? id;
+  String? name;
+  String? secondName;
   String? email;
-  DateTime? emailVerifiedAt;
-  String? password;
-  String role;
-  String? profilePicture;
-  bool? actived;
-  bool? emailConfirmed;
-  bool deleted;
-  String? rememberToken;
+  String username;
+  String? role;
+  bool? activated;
+  bool? deleted;
+  String? token;
 
   User({
-    required this.id,
-    required this.name,
+    this.id,
+    this.name,
+    this.secondName,
     this.email,
-    this.emailVerifiedAt,
-    this.password,
-    required this.role,
-    this.profilePicture,
-    this.actived,
-    this.emailConfirmed,
-    required this.deleted,
-    this.rememberToken,
+    required this.username,
+    this.role,
+    this.activated,
+    this.deleted,
+    this.token,
   });
 
   factory User.fromLoginJson(Map<String, dynamic> json) => User(
-    rememberToken: json['token'],
-    id: json['id'],
-    name: json['name'],
-    role: json['role'],
-    deleted: json['deleted'] == 1, //bool
+    username: json['username'],
+    token: json['token']
   );
 
-  factory User.fromUsersJson(Map<String, dynamic> json) => User(
+  factory User.fromRegisterJson(Map<String, dynamic> json) => User(
     id: json['id'],
     name: json['name'],
+    secondName: json['secondName'],
     email: json['email'],
+    username: json['username']
+  );
+
+  factory User.fromUserDTO(Map<String, dynamic> json) => User(
+    id: json['id'],
+    name: json['name'],
+    secondName: json['secondName'],
+    email: json['email'],
+    username: json['username'],
     role: json['role'],
-    emailVerifiedAt: json['email_verified_at'] != null
-        ? DateTime.parse(json['email_verified_at'])
-        : null,
-    actived: json['actived'] == 1, //bool
-    deleted: json['deleted'] == 1, //bool
+    activated: json['activated'],
+    deleted: json['deleted']
   );
 }
