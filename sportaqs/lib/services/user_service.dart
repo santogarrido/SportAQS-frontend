@@ -70,6 +70,8 @@ class UserService {
       },
     );
 
+    print('STATUS: ${response.statusCode}');
+
     final responseApi = ResponseApi.fromJson(json.decode(response.body));
     return responseApi;
   }
