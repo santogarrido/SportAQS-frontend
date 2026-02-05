@@ -24,8 +24,8 @@ class Facility {
     openTime: json['openTime'], 
     closeTime: json['closeTime'], 
     location: json['location'], 
-    activated: json['activated'] == 1, 
-    deleted: json['deleted'] == 1
+    activated: json['activated'] ?? false,
+    deleted: json['deleted'] ?? false,
   );
 
 }

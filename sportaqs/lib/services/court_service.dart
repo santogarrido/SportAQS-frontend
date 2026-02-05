@@ -4,7 +4,8 @@ import 'package:sportaqs/models/court_response.dart';
 
 class CourtService {
 
-  static const String _baseUrl = 'http://localhost:8090';
+  //static const String _baseUrl = 'http://localhost:8090';
+  static const String _baseUrl = 'https://sportaqs-backend.onrender.com';
 
   Future<CourtsResponse> getCourts(int id, String token) async {
     Uri url = Uri.parse('$_baseUrl/courts/facility/$id');

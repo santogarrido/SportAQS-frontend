@@ -1,18 +1,19 @@
 import 'package:flutter/cupertino.dart';
 import 'package:sportaqs/models/facility.dart';
 import 'package:sportaqs/models/facility_response.dart';
+import 'package:sportaqs/providers/user_provider.dart';
 import 'package:sportaqs/services/facility_service.dart';
 
 class FacilityProvider extends ChangeNotifier{
 
   final FacilityService _facilityService = FacilityService();
-  //final UserProvider userProvider;
+  final UserProvider userProvider;
 
   List<Facility> facilities = [];
   bool isLoading = false;
   String? errorMessage;
 
-  //FacilityResponse(this.userProvider);
+  FacilityProvider(this.userProvider);
 
   Future<void> getFacilities() async {
     try{
@@ -20,13 +21,12 @@ class FacilityProvider extends ChangeNotifier{
       errorMessage = null;
       notifyListeners();
 
-      //TODO
-      final token = ''; //userProvider.activeUser?.rememberToken;
+      final token = userProvider.activeUser?.token;
 
-      // if(token == null){
-      //   errorMessage = "No hay usuario autenticado";
-      //   return;
-      // }
+      if(token == null){
+        errorMessage = "No hay usuario autenticado";
+        return;
+      }
 
       FacilitiesResponse response = await _facilityService.getFacilities(token);
 
@@ -50,12 +50,12 @@ class FacilityProvider extends ChangeNotifier{
       errorMessage = null;
       notifyListeners();
 
-      final token = ''; //userProvider.activeUser?.rememberToken;
-      
+      final token = userProvider.activeUser?.token;
+
       if(token == null){
-        errorMessage == "Usuario no autenticado";
+        errorMessage = "No hay usuario autenticado";
         return;
-      } 
+      }
 
       FacilitiesResponse response = await _facilityService.getFacilityById(id, token);
 
@@ -79,12 +79,12 @@ class FacilityProvider extends ChangeNotifier{
       errorMessage = null;
       notifyListeners();
 
-            final token = ''; //userProvider.activeUser?.rememberToken;
-      
+      final token = userProvider.activeUser?.token;
+
       if(token == null){
-        errorMessage == "Usuario no autenticado";
+        errorMessage = "No hay usuario autenticado";
         return;
-      } 
+      }
 
       FacilitiesResponse response = await _facilityService.addFacility(name, openTime, closeTime, location, token);
 
@@ -97,7 +97,8 @@ class FacilityProvider extends ChangeNotifier{
     }catch(e){
       errorMessage == "Error inesperado $e";
     }finally{
-      
+      isLoading = false;
+      notifyListeners();      
     }
 
   }
@@ -108,12 +109,12 @@ class FacilityProvider extends ChangeNotifier{
       errorMessage = null;
       notifyListeners();
 
-            final token = ''; //userProvider.activeUser?.rememberToken;
-      
+      final token = userProvider.activeUser?.token;
+
       if(token == null){
-        errorMessage == "Usuario no autenticado";
+        errorMessage = "No hay usuario autenticado";
         return;
-      } 
+      }
 
       FacilitiesResponse response = await _facilityService.deleteFacility(id, token);
       if(response.success == true){
@@ -125,7 +126,8 @@ class FacilityProvider extends ChangeNotifier{
     }catch(e){
       errorMessage == "Error inesperado $e";
     }finally{
-      
+      isLoading = false;
+      notifyListeners();      
     }
   }
 
@@ -135,12 +137,12 @@ class FacilityProvider extends ChangeNotifier{
       errorMessage = null;
       notifyListeners();
 
-            final token = ''; //userProvider.activeUser?.rememberToken;
-      
+      final token = userProvider.activeUser?.token;
+
       if(token == null){
-        errorMessage == "Usuario no autenticado";
+        errorMessage = "No hay usuario autenticado";
         return;
-      } 
+      }
 
       FacilitiesResponse response = await _facilityService.deactivateFacility(id, token);
 
@@ -153,7 +155,8 @@ class FacilityProvider extends ChangeNotifier{
     }catch(e){
       errorMessage == "Error inesperado $e";
     }finally{
-      
+      isLoading = false;
+      notifyListeners();      
     }
   }
 
@@ -163,12 +166,12 @@ class FacilityProvider extends ChangeNotifier{
       errorMessage = null;
       notifyListeners();
 
-            final token = ''; //userProvider.activeUser?.rememberToken;
-      
+      final token = userProvider.activeUser?.token;
+
       if(token == null){
-        errorMessage == "Usuario no autenticado";
+        errorMessage = "No hay usuario autenticado";
         return;
-      } 
+      }
 
       FacilitiesResponse response = await _facilityService.updateFacility(id,name, openTime, closeTime, location, token);
 
@@ -181,7 +184,8 @@ class FacilityProvider extends ChangeNotifier{
     }catch(e){
       errorMessage == "Error inesperado $e";
     }finally{
-      
+      isLoading = false;
+      notifyListeners();      
     }
   }
 
