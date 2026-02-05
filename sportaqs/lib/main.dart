@@ -1,15 +1,39 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
 import 'package:sportaqs/providers/user_provider.dart';
-import 'package:sportaqs/screens/login_screen.dart';
+import 'package:sportaqs/providers/facility_provider.dart';
+import 'package:sportaqs/providers/court_provider.dart';
+
 import 'package:sportaqs/services/user_service.dart';
+
+import 'package:sportaqs/screens/login_screen.dart';
 
 void main() {
   runApp(
     MultiProvider(
       providers: [
+        // USER PROVIDER
         ChangeNotifierProvider(
-          create: (_) => UserProvider(UserService()),
+          create: (context) => UserProvider(UserService()),
+        ),
+
+        // FACILITY PROVIDER (depende de UserProvider)
+        ChangeNotifierProxyProvider<UserProvider, FacilityProvider>(
+          create: (context) => FacilityProvider(
+            Provider.of<UserProvider>(context, listen: false),
+          ),
+          update: (context, userProvider, facilityProvider) =>
+              facilityProvider ?? FacilityProvider(userProvider),
+        ),
+
+        // COURT PROVIDER (depende de UserProvider)
+        ChangeNotifierProxyProvider<UserProvider, CourtProvider>(
+          create: (context) => CourtProvider(
+            Provider.of<UserProvider>(context, listen: false),
+          ),
+          update: (context, userProvider, courtProvider) =>
+              courtProvider ?? CourtProvider(userProvider),
         ),
       ],
       child: const MyApp(),
@@ -28,7 +52,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const LoginScreen(), // <-- pantalla inicial
+      home: const LoginScreen(),
     );
   }
 }

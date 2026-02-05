@@ -97,7 +97,8 @@ class FacilityProvider extends ChangeNotifier{
     }catch(e){
       errorMessage == "Error inesperado $e";
     }finally{
-      
+      isLoading = false;
+      notifyListeners();      
     }
 
   }
@@ -125,7 +126,8 @@ class FacilityProvider extends ChangeNotifier{
     }catch(e){
       errorMessage == "Error inesperado $e";
     }finally{
-      
+      isLoading = false;
+      notifyListeners();      
     }
   }
 
@@ -153,7 +155,8 @@ class FacilityProvider extends ChangeNotifier{
     }catch(e){
       errorMessage == "Error inesperado $e";
     }finally{
-      
+      isLoading = false;
+      notifyListeners();      
     }
   }
 
@@ -181,7 +184,8 @@ class FacilityProvider extends ChangeNotifier{
     }catch(e){
       errorMessage == "Error inesperado $e";
     }finally{
-      
+      isLoading = false;
+      notifyListeners();      
     }
   }
 

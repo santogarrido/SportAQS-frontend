@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:sportaqs/providers/user_provider.dart';
 import 'package:sportaqs/screens/register_screen.dart';
 import 'package:sportaqs/screens/test_screen.dart';
+import 'package:sportaqs/screens/user/user_screen.dart';
 import 'package:sportaqs/widgets/field_widget.dart';
 import 'package:sportaqs/widgets/password_widget.dart';
 
@@ -107,7 +108,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               Navigator.of(context).pushReplacement(
                                 MaterialPageRoute(
                                   builder: (context) =>
-                                      TestScreen(), //TODO UserScreen()
+                                      UserScreen(), //TODO UserScreen()
                                 ),
                               );
                             }

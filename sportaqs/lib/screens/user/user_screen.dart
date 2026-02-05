@@ -84,17 +84,7 @@ class _UserScreenState extends State<UserScreen> {
             icon: Icon(Icons.event_outlined),
             activeIcon: Icon(Icons.event),
             label: 'Events',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.event_outlined),
-            activeIcon: Icon(Icons.event),
-            label: 'My Events',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.picture_as_pdf_outlined),
-            activeIcon: Icon(Icons.picture_as_pdf),
-            label: 'Report',
-          ),
+          )
         ],
         backgroundColor: Color.fromARGB(255, 0, 229, 255),
       ),
