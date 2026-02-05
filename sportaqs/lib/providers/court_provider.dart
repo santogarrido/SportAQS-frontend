@@ -1,21 +1,20 @@
 import 'package:flutter/cupertino.dart';
 import 'package:sportaqs/models/court.dart';
 import 'package:sportaqs/models/court_response.dart';
+import 'package:sportaqs/providers/user_provider.dart';
 import 'package:sportaqs/services/court_service.dart';
 
 class CourtProvider extends ChangeNotifier{
 
   final CourtService _courtService = CourtService();
-  
-  //TODO
-  // final UserProvider userProvider;
+
+  final UserProvider userProvider;
 
   List<Court> courts = [];
   bool isLoading = false;
   String? errorMessage;
 
-  //TODO 
-  // CourtProvider(this.userProvider); 
+  CourtProvider(this.userProvider); 
 
   Future<void> getCourts(int id) async {
 
@@ -24,8 +23,7 @@ class CourtProvider extends ChangeNotifier{
       errorMessage = null;
       notifyListeners();
 
-      //TODO
-      final token = ''; //userProvider.activeUser?.rememberToken;
+      final token = userProvider.activeUser?.token;
 
       if(token == null){
         errorMessage = "No hay usuario autenticado";
@@ -55,8 +53,7 @@ class CourtProvider extends ChangeNotifier{
       errorMessage = null;
       notifyListeners();
 
-      //TODO
-      final token = ''; //userProvider.activeUser?.rememberToken;
+      final token = userProvider.activeUser?.token;
 
       if(token == null){
         errorMessage = "No hay usuario autenticado";
@@ -85,8 +82,7 @@ class CourtProvider extends ChangeNotifier{
       errorMessage = null;
       notifyListeners();
 
-      //TODO
-      final token = ''; //userProvider.activeUser?.rememberToken;
+      final token = userProvider.activeUser?.token;
 
       if(token == null){
         errorMessage = "No hay usuario autenticado";
@@ -115,8 +111,7 @@ class CourtProvider extends ChangeNotifier{
       errorMessage = null;
       notifyListeners();
 
-      //TODO
-      final token = ''; //userProvider.activeUser?.rememberToken;
+      final token = userProvider.activeUser?.token;
 
       if(token == null){
         errorMessage = "No hay usuario autenticado";
@@ -144,8 +139,7 @@ class CourtProvider extends ChangeNotifier{
       errorMessage = null;
       notifyListeners();
 
-      //TODO
-      final token = ''; //userProvider.activeUser?.rememberToken;
+      final token = userProvider.activeUser?.token;
 
       if(token == null){
         errorMessage = "No hay usuario autenticado";
@@ -174,8 +168,7 @@ class CourtProvider extends ChangeNotifier{
       errorMessage = null;
       notifyListeners();
 
-      //TODO
-      final token = ''; //userProvider.activeUser?.rememberToken;
+      final token = userProvider.activeUser?.token;
 
       if(token == null){
         errorMessage = "No hay usuario autenticado";
@@ -204,8 +197,7 @@ class CourtProvider extends ChangeNotifier{
       errorMessage = null;
       notifyListeners();
 
-      //TODO
-      final token = ''; //userProvider.activeUser?.rememberToken;
+      final token = userProvider.activeUser?.token;
 
       if(token == null){
         errorMessage = "No hay usuario autenticado";

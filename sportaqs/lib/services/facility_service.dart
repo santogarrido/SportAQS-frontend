@@ -5,7 +5,8 @@ import "package:sportaqs/models/facility_response.dart";
 
 class FacilityService {
 
-  static const String _baseUrl = 'http://localhost:8090'; 
+  //static const String _baseUrl = 'http://localhost:8090'; 
+  static const String _baseUrl = 'http://10.0.2.2:8090';
 
   Future<FacilitiesResponse> getFacilities(String token) async {
 
