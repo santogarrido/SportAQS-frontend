@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:sportaqs/models/facility.dart';
+import 'package:sportaqs/models/court.dart';
 
-class FacilityCard extends StatelessWidget {
-  final Facility facility;
+class CourtCard extends StatelessWidget {
+  final Court court;
   final VoidCallback onTap;
 
-  const FacilityCard({
+  const CourtCard({
     super.key,
-    required this.facility,
+    required this.court,
     required this.onTap,
   });
 
-  @override
+@override
   Widget build(BuildContext context) {
     return InkWell(
       borderRadius: BorderRadius.circular(12),
@@ -31,8 +31,9 @@ class FacilityCard extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              // Nombre
               Text(
-                facility.name,
+                court.name,
                 style: const TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
@@ -41,21 +42,25 @@ class FacilityCard extends StatelessWidget {
 
               const SizedBox(height: 8),
 
+              // Categoría
               Row(
                 children: [
-                  const Icon(Icons.location_on, size: 18),
+                  const Icon(Icons.sports_tennis, size: 18),
                   const SizedBox(width: 6),
-                  Expanded(child: Text(facility.location)),
+                  Expanded(
+                    child: Text(court.category),
+                  ),
                 ],
               ),
 
               const SizedBox(height: 6),
 
+              // Duración reserva
               Row(
                 children: [
-                  const Icon(Icons.schedule, size: 18),
+                  const Icon(Icons.timer, size: 18),
                   const SizedBox(width: 6),
-                  Text('${facility.openTime} - ${facility.closeTime}'),
+                  Text('${court.bookingDuration} min'),
                 ],
               ),
             ],
