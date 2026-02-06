@@ -56,7 +56,12 @@ class _UserScreenState extends State<UserScreen> {
           children: [
             const SizedBox(width: 16,),
             Expanded(child: Text(
-              context.watch<UserProvider>().activeUser?.name ?? '',
+              context.watch<UserProvider>().activeUser?.username ?? '',
+              style: const TextStyle(
+                color: Colors.white,
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+              ),
             ))
           ],
         ) ,
