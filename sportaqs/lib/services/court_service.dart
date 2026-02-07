@@ -40,7 +40,7 @@ class CourtService {
 
     final response = await http.post(
       url,
-      body: ({'name' : name, 'category' : category, 'bookingDuration' : bookingDuration, 'facilityId' : facilityId}),
+      body: json.encode({'name' : name, 'category' : category, 'bookingDuration' : bookingDuration, 'facilityId' : facilityId}),
       headers: {'Accept' : 'application/json', 'Authorization' : 'Bearer $token' , 'Content-Type' : 'application/json'}
     );
 
@@ -54,7 +54,7 @@ class CourtService {
 
     final response = await http.put(
       url,
-      body: ({'name' : name, 'category' : category, 'bookingDuration' : bookingDuration, 'facilityId' : facilityId}),
+      body: json.encode({'name' : name, 'category' : category, 'bookingDuration' : bookingDuration, 'facilityId' : facilityId}),
       headers: {'Accept' : 'application/json', 'Authorization' : 'Bearer $token' , 'Content-Type' : 'application/json'}
     );
 

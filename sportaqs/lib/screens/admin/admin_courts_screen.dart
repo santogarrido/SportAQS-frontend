@@ -48,7 +48,11 @@ class _AdminCourtsScreenState extends State<AdminCourtsScreen> {
     }
 
     return Scaffold(
-      
+      appBar: AppBar(
+        backgroundColor: Color.fromARGB(255, 0, 229, 255),
+        foregroundColor: Colors.white,
+        title: Text(widget.facility.name)
+      ),
       body: ListView.separated(
         itemCount: courts.length,
         itemBuilder: (context, index){
@@ -167,7 +171,7 @@ class _AdminCourtsScreenState extends State<AdminCourtsScreen> {
         onPressed: () {
           Navigator.of(context).push(
             MaterialPageRoute(
-              builder: (context) => AdminCreateCourtScreen()
+              builder: (context) => AdminCreateCourtScreen(facility: widget.facility)
             )
           );
         },

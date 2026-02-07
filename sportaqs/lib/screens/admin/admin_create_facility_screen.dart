@@ -28,7 +28,7 @@ class _AdminCreateFacilityScreenState extends State<AdminCreateFacilityScreen> {
       appBar: AppBar(
         backgroundColor: Color.fromARGB(255, 0, 229, 255),
         foregroundColor: Colors.white,
-        title: Text("Crea tu Instalación")
+        title: Text("Create your facility")
       ),
       body: SingleChildScrollView(
         padding: EdgeInsets.symmetric(
