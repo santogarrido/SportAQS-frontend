@@ -1,80 +1,87 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:provider/provider.dart';
+import 'package:sportaqs/models/court.dart';
 import 'package:sportaqs/models/facility.dart';
-import 'package:sportaqs/providers/facility_provider.dart';
-import 'package:sportaqs/screens/admin/admin_courts_screen.dart';
-import 'package:sportaqs/screens/admin/admin_create_facility_screen.dart';
-import 'package:sportaqs/screens/admin/admin_edit_facility_screen.dart';
-import 'package:sportaqs/widgets/admin/admin_facility_card.dart';
+import 'package:sportaqs/providers/court_provider.dart';
+import 'package:sportaqs/screens/admin/admin_court_booking_screen.dart';
+import 'package:sportaqs/screens/admin/admin_create_court_screen.dart';
+import 'package:sportaqs/screens/admin/admin_edit_court_screen.dart';
+import 'package:sportaqs/widgets/admin/admin_court_card.dart';
 
-class AdminFacilitiesScreen extends StatefulWidget {
-  const AdminFacilitiesScreen({super.key});
+class AdminCourtsScreen extends StatefulWidget {
+  final Facility facility;
+
+  const AdminCourtsScreen({super.key, required this.facility});
 
   @override
-  State<AdminFacilitiesScreen> createState() => _AdminFacilitiesScreenState();
+  State<AdminCourtsScreen> createState() => _AdminCourtsScreenState();
 }
 
-class _AdminFacilitiesScreenState extends State<AdminFacilitiesScreen> {
+class _AdminCourtsScreenState extends State<AdminCourtsScreen> {
+
   @override
   void initState() {
     super.initState();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      final facilityProvider =context.read<FacilityProvider>();
-
-      facilityProvider.getFacilities();
+      final courtProvider = context.read<CourtProvider>();
+      
+      courtProvider.getCourts(widget.facility.id);
     });
   }
 
+
   @override
   Widget build(BuildContext context) {
-    final parentContext = context;
-    final facilityProvider = Provider.of<FacilityProvider>(context);
-    List<Facility> facilities = facilityProvider.facilities;
 
-    if(facilityProvider.isLoading){
+    final parentContext = context;
+    final courtProvider = Provider.of<CourtProvider>(context);
+    List<Court> courts = courtProvider.courts;
+
+    if(courtProvider.isLoading){
       return const Center(child: CircularProgressIndicator());
     }
 
-    if(facilityProvider.errorMessage != null){
-      return Center(child: Text(facilityProvider.errorMessage!));
+    if(courtProvider.errorMessage != null){
+      return Center(child: Text(courtProvider.errorMessage!));
     }
 
     return Scaffold(
+      
       body: ListView.separated(
-        itemCount: facilities.length,
+        itemCount: courts.length,
         itemBuilder: (context, index){
-          final facility = facilities[index];
+          final court = courts[index];
 
           return Slidable(
-            key: ValueKey(facility.id),
+            key: ValueKey(court.id),
             startActionPane: ActionPane(
               motion: ScrollMotion(), 
               children: [
                 //Activate or deactivate
                 SlidableAction(
                   onPressed: (_) async {
-                    if(facility.activated == true){
-                      await facilityProvider.deactivateFacility(facility.id);
+                    if(court.activated == true){
+                      await courtProvider.deactivateCourt(court.id);
                     }else{
-                      await facilityProvider.activateFacility(facility.id);
+                      await courtProvider.activateCourt(court.id);
                     }
-                    await facilityProvider.getFacilities();
+                    await courtProvider.getCourts(widget.facility.id);
                     ScaffoldMessenger.of(parentContext).showSnackBar(
                       SnackBar(
                         content: Text(
-                          facility.activated ? 'Facility deactivated successfully' : 'Facility activated successfully'
+                          court.activated ? 'court deactivated successfully' : 'court activated successfully'
                         ),
                         backgroundColor: Colors.green,
                         duration: Duration(seconds: 2),
                       )
                     );
                   },
-                  backgroundColor: facility.activated ? Colors.red : Colors.green,
+                  backgroundColor: court.activated ? Colors.red : Colors.green,
                   foregroundColor: Colors.white,
-                  icon: facility.activated ? Icons.toggle_off : Icons.toggle_on,
-                  label: facility.activated ? 'Desactivar' : 'Activar',
+                  icon: court.activated ? Icons.toggle_off : Icons.toggle_on,
+                  label: court.activated ? 'Desactivar' : 'Activar',
                 ),
                 // Edit
                 SlidableAction(
@@ -82,7 +89,7 @@ class _AdminFacilitiesScreenState extends State<AdminFacilitiesScreen> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => AdminEditFacilityScreen(facility: facility),
+                        builder: (context) => AdminEditCourtScreen(court: court),
                       ),
                     );
                   },
@@ -103,7 +110,7 @@ class _AdminFacilitiesScreenState extends State<AdminFacilitiesScreen> {
                       context: context,
                       builder: (context) => AlertDialog(
                         title: Text("Confirmar eliminación"),
-                        content: Text("¿Deseas eliminar esta facility?"),
+                        content: Text("¿Deseas eliminar esta court?"),
                         actions: [
                           TextButton(
                             onPressed: () => Navigator.pop(context, false),
@@ -120,10 +127,10 @@ class _AdminFacilitiesScreenState extends State<AdminFacilitiesScreen> {
                     );
 
                     if (confirm == true) {
-                      await facilityProvider.deleteFacility(facility.id);
-                      await facilityProvider.getFacilities();
+                      await courtProvider.deleteCourt(court.id);
+                      await courtProvider.getCourts(widget.facility.id);
                       ScaffoldMessenger.of(parentContext).showSnackBar(
-                        SnackBar(content: Text('Facility eliminada con éxito'),
+                        SnackBar(content: Text('court eliminada con éxito'),
                         backgroundColor: Colors.green,
                         duration: Duration(seconds: 2),
                         )
@@ -137,14 +144,14 @@ class _AdminFacilitiesScreenState extends State<AdminFacilitiesScreen> {
                 ),
               ],
             ),
-            child: AdminFacilityCard(
-              facility: facility,
+            child: AdminCourtCard(
+              court: court,
               onTap: () {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
                     builder: (_) =>
-                        AdminCourtsScreen(facility: facility),
+                        AdminCourtBookingScreen(court: court),
                   ),
                 );
               },
@@ -160,14 +167,14 @@ class _AdminFacilitiesScreenState extends State<AdminFacilitiesScreen> {
         onPressed: () {
           Navigator.of(context).push(
             MaterialPageRoute(
-              builder: (context) => AdminCreateFacilityScreen()
+              builder: (context) => AdminCreateCourtScreen()
             )
           );
         },
         backgroundColor: const Color.fromARGB(255, 0, 229, 255),
         child: const Icon(Icons.add),
       ),
+    
     );
   }
 }
-

@@ -68,7 +68,7 @@ class _CourtsScreenState extends State<CourtsScreen> {
                     ),
                   ),
                 ]
-              : courts
+                : courts
                     .map(
                       (court) => CourtCard(
                         court: court,
