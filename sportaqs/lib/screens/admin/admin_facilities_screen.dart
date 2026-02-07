@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:provider/provider.dart';
+import 'package:sportaqs/models/facility.dart';
 import 'package:sportaqs/providers/facility_provider.dart';
 import 'package:sportaqs/screens/admin/admin_courts_screen.dart';
 import 'package:sportaqs/screens/admin/admin_create_facility_screen.dart';
@@ -31,8 +32,9 @@ class _AdminFacilitiesScreenState extends State<AdminFacilitiesScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final facilityProvider = context.watch<FacilityProvider>();
-    final facilities = facilityProvider.facilities;
+    final parentContext = context;
+    final facilityProvider = Provider.of<FacilityProvider>(context);
+    List<Facility> facilities = facilityProvider.facilities;
 
     return Scaffold(
       body: facilityProvider.isLoading
@@ -52,54 +54,43 @@ class _AdminFacilitiesScreenState extends State<AdminFacilitiesScreen> {
                         startActionPane: ActionPane(
                           motion: const ScrollMotion(),
                           children: [
-                            // Activate / Deactivate
                             SlidableAction(
                               onPressed: (_) async {
-                                if (facility.activated == true) {
-                                  await facilityProvider
-                                      .deactivateFacility(facility.id);
+                                if (facility.activated) {
+                                  await facilityProvider.deactivateFacility(facility.id);
                                 } else {
-                                  await facilityProvider
-                                      .activateFacility(facility.id);
+                                  await facilityProvider.activateFacility(facility.id);
                                 }
-                                await _refreshFacilities();
-                                ScaffoldMessenger.of(context).showSnackBar(
+                                await facilityProvider.getFacilities();
+                                ScaffoldMessenger.of(parentContext).showSnackBar(
                                   SnackBar(
                                     content: Text(facility.activated
-                                        ? 'Facility deactivated'
-                                        : 'Facility activated'),
+                                        ? 'Facility desactivada'
+                                        : 'Facility activada'),
                                     backgroundColor: Colors.green,
                                     duration: const Duration(seconds: 2),
                                   ),
                                 );
                               },
-                              backgroundColor: facility.activated
-                                  ? Colors.red
-                                  : Colors.green,
+                              backgroundColor: facility.activated ? Colors.red : Colors.green,
                               foregroundColor: Colors.white,
-                              icon: facility.activated
-                                  ? Icons.toggle_off
-                                  : Icons.toggle_on,
-                              label:
-                                  facility.activated ? 'Deactivate' : 'Activate',
+                              icon: facility.activated ? Icons.toggle_off : Icons.toggle_on,
+                              label: facility.activated ? 'Desactivar' : 'Activar',
                             ),
-                            // Edit
                             SlidableAction(
-                              onPressed: (context) async {
-                                await Navigator.push(
+                              onPressed: (context) {
+                                Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (_) =>
+                                    builder: (context) =>
                                         AdminEditFacilityScreen(facility: facility),
                                   ),
                                 );
-                                // Refresh
-                                await _refreshFacilities();
                               },
                               backgroundColor: Colors.blue,
                               foregroundColor: Colors.white,
                               icon: Icons.edit,
-                              label: "Edit",
+                              label: "Editar",
                             ),
                           ],
                         ),
@@ -108,23 +99,22 @@ class _AdminFacilitiesScreenState extends State<AdminFacilitiesScreen> {
                           children: [
                             SlidableAction(
                               onPressed: (context) async {
-                                final confirm = await showDialog<bool>(
+                                final confirm = await showDialog(
                                   context: context,
-                                  builder: (_) => AlertDialog(
-                                    title: const Text("Confirm delete?"),
-                                    content: const Text(
-                                        "Are you sure you want to delete this facility?"),
+                                  builder: (context) => AlertDialog(
+                                    title: const Text("Confirmar eliminación"),
+                                    content: const Text("¿Deseas eliminar esta facility?"),
                                     actions: [
                                       TextButton(
-                                        onPressed: () =>
-                                            Navigator.pop(context, false),
-                                        child: const Text("Cancel"),
+                                        onPressed: () => Navigator.pop(context, false),
+                                        child: const Text("Cancelar"),
                                       ),
                                       TextButton(
-                                        onPressed: () =>
-                                            Navigator.pop(context, true),
+                                        onPressed: () async {
+                                          Navigator.pop(context, true);
+                                        },
                                         child: const Text(
-                                          "Delete",
+                                          "Eliminar",
                                           style: TextStyle(color: Colors.red),
                                         ),
                                       ),
@@ -134,11 +124,10 @@ class _AdminFacilitiesScreenState extends State<AdminFacilitiesScreen> {
 
                                 if (confirm == true) {
                                   await facilityProvider.deleteFacility(facility.id);
-                                  await _refreshFacilities();
-                                  ScaffoldMessenger.of(context).showSnackBar(
+                                  await facilityProvider.getFacilities();
+                                  ScaffoldMessenger.of(parentContext).showSnackBar(
                                     const SnackBar(
-                                      content: Text(
-                                          'Facility deleted successfully'),
+                                      content: Text('Facility eliminada con éxito'),
                                       backgroundColor: Colors.green,
                                       duration: Duration(seconds: 2),
                                     ),
@@ -148,37 +137,32 @@ class _AdminFacilitiesScreenState extends State<AdminFacilitiesScreen> {
                               backgroundColor: Colors.red,
                               foregroundColor: Colors.white,
                               icon: Icons.delete,
-                              label: "Delete",
+                              label: "Eliminar",
                             ),
                           ],
                         ),
                         child: AdminFacilityCard(
                           facility: facility,
-                          onTap: () async {
-                            await Navigator.push(
+                          onTap: () {
+                            Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (_) =>
-                                    AdminCourtsScreen(facility: facility),
+                                builder: (_) => AdminCourtsScreen(facility: facility),
                               ),
                             );
-                            await _refreshFacilities();
                           },
                         ),
                       );
                     },
-                    separatorBuilder: (_, __) => const Divider(),
+                    separatorBuilder: (BuildContext context, int index) => const Divider(),
                   ),
                 ),
       floatingActionButton: FloatingActionButton(
         heroTag: null,
-        onPressed: () async {
-          await Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (_) => AdminCreateFacilityScreen(),
-            ),
+        onPressed: () {
+          Navigator.of(context).push(
+            MaterialPageRoute(builder: (context) => const AdminCreateFacilityScreen()),
           );
-          await _refreshFacilities(); // 🔹 refrescar al volver de create
         },
         backgroundColor: const Color.fromARGB(255, 0, 229, 255),
         child: const Icon(Icons.add),
