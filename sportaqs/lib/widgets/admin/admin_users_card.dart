@@ -3,19 +3,16 @@ import 'package:sportaqs/models/user.dart';
 
 class AdminUserCard extends StatelessWidget {
   final User user;
-  final VoidCallback onTap;
 
   const AdminUserCard({
     super.key,
     required this.user,
-    required this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
       borderRadius: BorderRadius.circular(12),
-      onTap: onTap,
       child: Card(
         margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
         shape: RoundedRectangleBorder(

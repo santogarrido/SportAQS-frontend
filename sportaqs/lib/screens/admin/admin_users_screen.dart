@@ -1,52 +1,90 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:provider/provider.dart';
+import 'package:sportaqs/models/user.dart';
+import 'package:sportaqs/providers/user_provider.dart';
+import 'package:sportaqs/widgets/admin/admin_users_card.dart';
 
-class AdminUsersScreen extends StatelessWidget{
+class AdminUsersScreen extends StatefulWidget {
   const AdminUsersScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    final List<Map<String, String>> items = [
-      {
-        'title': 'Vista de Users',
-        'subtitle': 'Aqui van todos los Users',
-      },
-    ];
+  State<AdminUsersScreen> createState() => _AdminUsersScreenState();
+}
 
-    return ListView.builder(
-      padding: const EdgeInsets.all(16),
-      itemCount: items.length,
-      itemBuilder: (context, index) {
-        final item = items[index];
-        return Card(
-          margin: const EdgeInsets.only(bottom: 16),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16),
-          ),
-          elevation: 4,
-          child: ListTile(
-            contentPadding: const EdgeInsets.all(16),
-            title: Text(
-              item['title']!,
-              style: const TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            subtitle: Padding(
-              padding: const EdgeInsets.only(top: 8.0),
-              child: Text(
-                item['subtitle']!,
-                style: const TextStyle(fontSize: 14),
-              ),
-            ),
-            leading: CircleAvatar(
-              backgroundColor: Colors.purple[200],
-              child: const Icon(Icons.star, color: Colors.white),
-            ),
-          ),
-        );
-      },
-    );
+class _AdminUsersScreenState extends State<AdminUsersScreen> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final userProvider = context.read<UserProvider>();
+      userProvider.getAllUsers();
+    });
   }
 
+  Future<void> _refreshUsers() async {
+    final userProvider = context.read<UserProvider>();
+    await userProvider.getAllUsers();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final parentContext = context;
+    final userProvider = Provider.of<UserProvider>(context);
+    final List<User> users = userProvider.userList;
+
+    return Scaffold(
+      body: userProvider.loading
+          ? const Center(child: CircularProgressIndicator())
+          : userProvider.errorMessage != null
+              ? Center(child: Text(userProvider.errorMessage!))
+              : RefreshIndicator(
+                  onRefresh: _refreshUsers,
+                  child: ListView.separated(
+                    physics: const AlwaysScrollableScrollPhysics(),
+                    itemCount: users.length,
+                    itemBuilder: (context, index) {
+                      final user = users[index];
+
+                      return Slidable(
+                        key: ValueKey(user.id),
+                        startActionPane: ActionPane(
+                          motion: const ScrollMotion(),
+                          children: [
+                            SlidableAction(
+                              onPressed: (_) async {
+                                // Usar editActivation del provider
+                                await userProvider.editActivation(user.id!, user.activated ?? false);
+
+                                // Recargar lista
+                                await userProvider.getAllUsers();
+
+                                ScaffoldMessenger.of(parentContext).showSnackBar(
+                                  SnackBar(
+                                    content: Text(
+                                      (user.activated ?? false)
+                                          ? 'User deactivated'
+                                          : 'User activated',
+                                    ),
+                                    backgroundColor: Colors.green,
+                                    duration: const Duration(seconds: 2),
+                                  ),
+                                );
+                              },
+                              backgroundColor:
+                                  (user.activated ?? false) ? Colors.red : Colors.green,
+                              foregroundColor: Colors.white,
+                              icon: (user.activated ?? false) ? Icons.toggle_off : Icons.toggle_on,
+                              label: (user.activated ?? false) ? 'Deactivate' : 'Activate',
+                            ),
+                          ],
+                        ),
+                        child: AdminUserCard(user: user),
+                      );
+                    },
+                    separatorBuilder: (context, index) => const Divider(),
+                  ),
+                ),
+    );
+  }
 }
