@@ -15,16 +15,25 @@ class FacilitiesScreen extends StatefulWidget {
 
 class _FacilitiesScreenState extends State<FacilitiesScreen> {
   @override
-  Widget build(BuildContext context) {
+  void initState() {
+    super.initState();
 
+    Future.microtask(() {
+      final facilityProvider = context.read<FacilityProvider>();
+      facilityProvider.getFacilitiesForUsers();
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final userProvider = Provider.of<UserProvider>(context, listen: false);
     final facilityProvider = Provider.of<FacilityProvider>(context);
 
-    if(facilityProvider.isLoading){
+    if (facilityProvider.isLoading) {
       return const Center(child: CircularProgressIndicator());
     }
 
-    if(facilityProvider.errorMessage != null){
+    if (facilityProvider.errorMessage != null) {
       return Center(child: Text(facilityProvider.errorMessage!));
     }
 
@@ -38,27 +47,27 @@ class _FacilitiesScreenState extends State<FacilitiesScreen> {
                 ? [
                     SizedBox(
                       height: MediaQuery.of(context).size.height - 100,
-                      child: const Center(
-                        child: Text("No hay eventos disponibles"),
-                      ),
+                      child: const Center(child: Text("No facilities found")),
                     ),
                   ]
-                  : facilityProvider.facilitiesForUsers.map(
-                      (facility) => FacilityCard(
-                        facility: facility,
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (_) => CourtsScreen(
-                                facility: facility,
-                                activeUser: userProvider.activeUser!,
+                : facilityProvider.facilitiesForUsers
+                      .map(
+                        (facility) => FacilityCard(
+                          facility: facility,
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => CourtsScreen(
+                                  facility: facility,
+                                  activeUser: userProvider.activeUser!,
+                                ),
                               ),
-                            ),
-                          );
-                        },
-                      ),
-                    ).toList(),
+                            );
+                          },
+                        ),
+                      )
+                      .toList(),
           ),
         ),
       ],

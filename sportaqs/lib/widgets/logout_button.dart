@@ -14,16 +14,16 @@ class LogoutButton extends StatelessWidget {
         final confirm = await showDialog<bool>(
           context: context,
           builder: (context) => AlertDialog(
-            title: const Text('Cerrar sesión'),
-            content: const Text('¿Deseas cerrar sesión?'),
+            title: const Text('Logout'),
+            content: const Text('Do you want to logout?'),
             actions: [
               TextButton(
                 onPressed: () => Navigator.pop(context, false),
-                child: const Text('Cancelar'),
+                child: const Text('Cancel'),
               ),
               TextButton(
                 onPressed: () => Navigator.pop(context, true),
-                child: const Text('Cerrar sesión'),
+                child: const Text('Logout'),
               ),
             ],
           ),

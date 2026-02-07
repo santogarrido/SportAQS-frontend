@@ -85,7 +85,7 @@ class _AdminCourtsScreenState extends State<AdminCourtsScreen> {
                   backgroundColor: court.activated ? Colors.red : Colors.green,
                   foregroundColor: Colors.white,
                   icon: court.activated ? Icons.toggle_off : Icons.toggle_on,
-                  label: court.activated ? 'Desactivar' : 'Activar',
+                  label: court.activated ? 'Deactivate' : 'Activate',
                 ),
                 // Edit
                 SlidableAction(
@@ -100,7 +100,7 @@ class _AdminCourtsScreenState extends State<AdminCourtsScreen> {
                   backgroundColor: Colors.blue,
                   foregroundColor: Colors.white,
                   icon: Icons.edit,
-                  label: "Editar",
+                  label: "Edit",
                 ),                
               ]
             ),
@@ -113,18 +113,18 @@ class _AdminCourtsScreenState extends State<AdminCourtsScreen> {
                     final confirm = await showDialog(
                       context: context,
                       builder: (context) => AlertDialog(
-                        title: Text("Confirmar eliminación"),
-                        content: Text("¿Deseas eliminar esta court?"),
+                        title: Text("Confirm delete"),
+                        content: Text("Do you want to delete this court?"),
                         actions: [
                           TextButton(
                             onPressed: () => Navigator.pop(context, false),
-                            child: Text("Cancelar"),
+                            child: Text("Cancel"),
                           ),
                           TextButton(
                             onPressed: () async {
                               Navigator.pop(context, true);
                             },
-                            child: Text("Eliminar", style: TextStyle(color: Colors.red)),
+                            child: Text("Delete", style: TextStyle(color: Colors.red)),
                           ),
                         ],
                       ),
@@ -134,7 +134,7 @@ class _AdminCourtsScreenState extends State<AdminCourtsScreen> {
                       await courtProvider.deleteCourt(court.id);
                       await courtProvider.getCourts(widget.facility.id);
                       ScaffoldMessenger.of(parentContext).showSnackBar(
-                        SnackBar(content: Text('court eliminada con éxito'),
+                        SnackBar(content: Text('court deleted successfully'),
                         backgroundColor: Colors.green,
                         duration: Duration(seconds: 2),
                         )
@@ -144,7 +144,7 @@ class _AdminCourtsScreenState extends State<AdminCourtsScreen> {
                   backgroundColor: Colors.red,
                   foregroundColor: Colors.white,
                   icon: Icons.delete,
-                  label: "Eliminar",
+                  label: "Delete",
                 ),
               ],
             ),
@@ -153,9 +153,10 @@ class _AdminCourtsScreenState extends State<AdminCourtsScreen> {
               onTap: () {
                 Navigator.push(
                   context,
+                  
                   MaterialPageRoute(
                     builder: (_) =>
-                        AdminCourtBookingScreen(court: court),
+                        AdminCourtBookingScreen(court: court, facility: widget.facility,),
                   ),
                 );
               },
