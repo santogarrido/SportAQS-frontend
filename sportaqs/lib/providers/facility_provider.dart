@@ -160,6 +160,35 @@ class FacilityProvider extends ChangeNotifier{
     }
   }
 
+    Future<void> activateFacility(int id) async {
+    try{
+      isLoading = true;
+      errorMessage = null;
+      notifyListeners();
+
+      final token = userProvider.activeUser?.token;
+
+      if(token == null){
+        errorMessage = "No hay usuario autenticado";
+        return;
+      }
+
+      FacilitiesResponse response = await _facilityService.activateFacility(id, token);
+
+      if(response.success == true){
+        facilities = response.data;
+      }else {
+        errorMessage == response.message;
+      }
+
+    }catch(e){
+      errorMessage == "Error inesperado $e";
+    }finally{
+      isLoading = false;
+      notifyListeners();      
+    }
+  }
+
   Future<void> updateFacility(int id, String name, String openTime, String closeTime, String location) async {
     try{
       isLoading = true;

@@ -30,7 +30,7 @@ class _CourtsScreenState extends State<CourtsScreen> {
           .getCourts(widget.facility.id);
     });
   }
-  
+
   @override
   Widget build(BuildContext context) {
     final courtProvider = Provider.of<CourtProvider>(context);
@@ -75,7 +75,6 @@ class _CourtsScreenState extends State<CourtsScreen> {
                     (court) => CourtCard(
                       court: court,
                       onTap: () {
-                        // 👉 siguiente pantalla reserva
                         debugPrint(
                           'Court ${court.id} seleccionada por ${widget.activeUser.name}',
                         );
