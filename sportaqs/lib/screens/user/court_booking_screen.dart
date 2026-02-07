@@ -1,8 +1,10 @@
 import 'package:booking_calendar/booking_calendar.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:sportaqs/models/court.dart';
 import 'package:sportaqs/models/facility.dart';
 import 'package:sportaqs/models/user.dart';
+import 'package:sportaqs/providers/booking_provider.dart';
 
 class CourtBookingScreen extends StatefulWidget {
   final Court court;
@@ -21,6 +23,15 @@ class CourtBookingScreen extends StatefulWidget {
 }
 
 class _CourtBookingScreenState extends State<CourtBookingScreen> {
+  late BookingProvider bookingProvider;
+
+  @override
+  void initState() {
+    super.initState();
+
+    bookingProvider = Provider.of<BookingProvider>(context, listen: false);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -36,12 +47,13 @@ class _CourtBookingScreenState extends State<CourtBookingScreen> {
         convertStreamResultToDateTimeRanges:
             _convertStreamResultToDateTimeRanges,
         lastDay: DateTime.now().add(const Duration(days: 7)),
+        loadingWidget: const Center(child: CircularProgressIndicator()),
+        uploadingWidget: const Center(child: CircularProgressIndicator()),
       ),
     );
   }
 
-  // ---------------- TIME HELPERS ----------------
-
+  // Parse String to DateTime
   DateTime _timeStringToDateTime(String time) {
     final parts = time.split(':');
     final now = DateTime.now();
@@ -55,6 +67,7 @@ class _CourtBookingScreenState extends State<CourtBookingScreen> {
     );
   }
 
+  // Create BookingService for the calendar
   BookingService _bookingService() {
     return BookingService(
       serviceName: widget.court.name,
@@ -64,25 +77,50 @@ class _CourtBookingScreenState extends State<CourtBookingScreen> {
     );
   }
 
-  // ---------------- MOCK (SIN BACKEND) ----------------
-
-  /// De momento no hay reservas
+  // Get the bookings of this court
   Stream<List<dynamic>> _getBookingStream({
     required DateTime start,
     required DateTime end,
   }) async* {
-    yield [];
+    await bookingProvider.getBookingsByCourt(widget.court.id);
+    yield bookingProvider.bookings;
   }
 
-  /// Simula crear una reserva
+  //Create the book at the selected time
   Future<dynamic> _uploadBooking({required BookingService newBooking}) async {
+    final bookingDateTime = DateTime.now();
+    final courtDateTimeBooking = newBooking.bookingStart;
+
+    await bookingProvider.addBooking(
+      userId: widget.user.id!,
+      courtId: widget.court.id,
+      bookingDateTime: bookingDateTime,
+      courtDateTimeBooking: courtDateTimeBooking,
+    );
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('Booking successful!'),
+        backgroundColor: Colors.green,
+        duration: Duration(seconds: 2),
+      ),
+    );
+    await bookingProvider.getBookingsByCourt(widget.court.id);
+
     return true;
   }
 
-  /// Convierte reservas → franjas ocupadas
+  // Load unavailable hours
   List<DateTimeRange> _convertStreamResultToDateTimeRanges({
     required dynamic streamResult,
   }) {
-    return [];
+    final bookings = streamResult as List;
+
+    return bookings.map<DateTimeRange>((b) {
+      final start = b.courtDateTimeBooking;
+      final end = start.add(Duration(minutes: widget.court.bookingDuration));
+
+      return DateTimeRange(start: start, end: end);
+    }).toList();
   }
 }

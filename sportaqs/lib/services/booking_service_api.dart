@@ -1,14 +1,48 @@
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
-import 'package:sportaqs/models/booking.dart';
 import 'package:sportaqs/models/response_api.dart';
 
 class BookingServiceApi {
   static const String _baseUrl = 'https://sportaqs-backend.onrender.com';
 
+  //Get all
+  Future<ResponseApi> getAllBookings(String token) async {
+    Uri url = Uri.parse('$_baseUrl/bookings');
+
+    final response = await http.get(
+      url,
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+    );
+
+    return ResponseApi.fromJson(json.decode(response.body));
+  }
+
+  // Get all bookings of a Court
+  Future<ResponseApi> getBookingsByCourt(int courtId, String token) async {
+    Uri url = Uri.parse('$_baseUrl/bookings/getByCourt/$courtId');
+
+    final response = await http.get(
+      url,
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+    );
+
+    return ResponseApi.fromJson(json.decode(response.body));
+  }
+
   // Get all bookings of a Facility
-  Future<ResponseApi> getAllBookings(int facilityId) async {
+  Future<ResponseApi> getBookingsByFacility(
+    int facilityId,
+    String token,
+  ) async {
     Uri url = Uri.parse('$_baseUrl/bookings/getAllBookings/$facilityId');
 
     final response = await http.post(
@@ -16,6 +50,7 @@ class BookingServiceApi {
       headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
       },
     );
 
@@ -24,7 +59,7 @@ class BookingServiceApi {
   }
 
   // Get bookings of an User
-  Future<ResponseApi> getBookingsByUser(int userId) async {
+  Future<ResponseApi> getBookingsByUser(int userId, String token) async {
     Uri url = Uri.parse('$_baseUrl/bookings/getBookingsByUser/$userId');
 
     final response = await http.post(
@@ -32,6 +67,7 @@ class BookingServiceApi {
       headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
       },
     );
 
@@ -40,7 +76,7 @@ class BookingServiceApi {
   }
 
   // Get booking by id
-  Future<ResponseApi> getBookingById(int bookingId) async {
+  Future<ResponseApi> getBookingById(int bookingId, String token) async {
     Uri url = Uri.parse('$_baseUrl/bookings/getBooking/$bookingId');
 
     final response = await http.post(
@@ -48,6 +84,7 @@ class BookingServiceApi {
       headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
       },
     );
 
@@ -61,6 +98,7 @@ class BookingServiceApi {
     int courtId,
     DateTime bookingDateTime,
     DateTime courtDateTimeBooking,
+    String token,
   ) async {
     Uri url = Uri.parse('$_baseUrl/bookings/addBooking');
 
@@ -69,12 +107,13 @@ class BookingServiceApi {
       body: jsonEncode({
         'userId': userId,
         'courtId': courtId,
-        'bookingDateTime': bookingDateTime,
-        'courtDateTimeBooking': courtDateTimeBooking,
+        'bookingDateTime': bookingDateTime.toIso8601String(),
+        'courtDateTimeBooking': courtDateTimeBooking.toIso8601String(),
       }),
       headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
       },
     );
 
@@ -83,7 +122,7 @@ class BookingServiceApi {
   }
 
   // Delete booking
-  Future<ResponseApi> deleteBooking(int bookingId) async {
+  Future<ResponseApi> deleteBooking(int bookingId, String token) async {
     Uri url = Uri.parse('$_baseUrl/bookings/deleteBooking/$bookingId');
 
     final response = await http.delete(
@@ -91,6 +130,7 @@ class BookingServiceApi {
       headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
       },
     );
 
