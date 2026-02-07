@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:sportaqs/models/facility.dart';
 import 'package:sportaqs/models/user.dart';
 import 'package:sportaqs/providers/court_provider.dart';
+import 'package:sportaqs/screens/user/court_booking_screen.dart';
 import 'package:sportaqs/widgets/court_card.dart';
 
 class CourtsScreen extends StatefulWidget {
@@ -20,14 +21,15 @@ class CourtsScreen extends StatefulWidget {
 }
 
 class _CourtsScreenState extends State<CourtsScreen> {
-
   @override
   void initState() {
     super.initState();
 
     Future.microtask(() {
-      Provider.of<CourtProvider>(context, listen: false)
-          .getCourts(widget.facility.id);
+      Provider.of<CourtProvider>(
+        context,
+        listen: false,
+      ).getCourts(widget.facility.id);
     });
   }
 
@@ -36,15 +38,11 @@ class _CourtsScreenState extends State<CourtsScreen> {
     final courtProvider = Provider.of<CourtProvider>(context);
 
     if (courtProvider.isLoading) {
-      return const Scaffold(
-        body: Center(child: CircularProgressIndicator()),
-      );
+      return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }
 
     if (courtProvider.errorMessage != null) {
-      return Scaffold(
-        body: Center(child: Text(courtProvider.errorMessage!)),
-      );
+      return Scaffold(body: Center(child: Text(courtProvider.errorMessage!)));
     }
 
     final courts = courtProvider.courts
@@ -68,7 +66,7 @@ class _CourtsScreenState extends State<CourtsScreen> {
                     child: const Center(
                       child: Text("No hay pistas disponibles"),
                     ),
-                  )
+                  ),
                 ]
               : courts
                   .map(
@@ -82,6 +80,24 @@ class _CourtsScreenState extends State<CourtsScreen> {
                     ),
                   )
                   .toList(),
+                    .map(
+                      (court) => CourtCard(
+                        court: court,
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => CourtBookingScreen(
+                                court: court,
+                                facility: widget.facility,
+                                user: widget.activeUser,
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                    )
+                    .toList(),
         ),
       ),
     );
