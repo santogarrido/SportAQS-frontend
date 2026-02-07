@@ -68,18 +68,7 @@ class _CourtsScreenState extends State<CourtsScreen> {
                     ),
                   ),
                 ]
-              : courts
-                  .map(
-                    (court) => CourtCard(
-                      court: court,
-                      onTap: () {
-                        debugPrint(
-                          'Court ${court.id} seleccionada por ${widget.activeUser.name}',
-                        );
-                      },
-                    ),
-                  )
-                  .toList(),
+                : courts
                     .map(
                       (court) => CourtCard(
                         court: court,

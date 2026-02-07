@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:sportaqs/models/facility.dart';
+import 'package:sportaqs/models/court.dart';
 
-class AdminFacilityCard extends StatelessWidget {
-  final Facility facility;
+class AdminCourtCard extends StatelessWidget {
+  final Court court;
   final VoidCallback onTap;
 
-  const AdminFacilityCard({
+  const AdminCourtCard({
     super.key,
-    required this.facility,
+    required this.court,
     required this.onTap,
   });
 
@@ -21,7 +21,7 @@ class AdminFacilityCard extends StatelessWidget {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(12),
           side: BorderSide(
-            color: facility.activated
+            color: court.activated
                 ? Colors.lightBlueAccent
                 : Colors.grey,
             width: 1.5,
@@ -38,16 +38,16 @@ class AdminFacilityCard extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    facility.name,
+                    court.name,
                     style: const TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
                   Text(
-                    facility.activated ? "Activa" : "Inactiva",
+                    court.activated ? "Activa" : "Inactiva",
                     style: TextStyle(
-                      color: facility.activated
+                      color: court.activated
                           ? Colors.green
                           : Colors.red,
                       fontWeight: FontWeight.bold,
@@ -60,9 +60,9 @@ class AdminFacilityCard extends StatelessWidget {
               // Ubicación
               Row(
                 children: [
-                  const Icon(Icons.location_on, size: 18),
+                  const Icon(Icons.sports, size: 18),
                   const SizedBox(width: 6),
-                  Expanded(child: Text(facility.location)),
+                  Expanded(child: Text(court.category)),
                 ],
               ),
               const SizedBox(height: 6),
@@ -72,7 +72,7 @@ class AdminFacilityCard extends StatelessWidget {
                 children: [
                   const Icon(Icons.schedule, size: 18),
                   const SizedBox(width: 6),
-                  Text('${facility.openTime} - ${facility.closeTime}'),
+                  Text('${court.bookingDuration} min'),
                 ],
               ),
             ],
