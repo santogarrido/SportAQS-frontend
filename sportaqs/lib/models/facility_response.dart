@@ -11,11 +11,23 @@ class FacilitiesResponse {
     required this.message,
   });
 
-  factory FacilitiesResponse.fromJson(Map<String, dynamic> json) => FacilitiesResponse(
-    success: json["success"],
-    data: (json["data"] as List)
-        .map((facilityJson) => Facility.fromFacilitiesJson(facilityJson))
-        .toList(),
-    message: json["message"],
-  );
+  factory FacilitiesResponse.fromJson(Map<String, dynamic> json) {
+    List<Facility> parsedData = [];
+
+    if (json['data'] != null) {
+      if (json['data'] is Map<String, dynamic>) {
+        parsedData = [Facility.fromFacilitiesJson(json['data'])];
+      } else if (json['data'] is List) {
+        parsedData = (json['data'] as List)
+            .map((f) => Facility.fromFacilitiesJson(f))
+            .toList();
+      }
+    }
+
+    return FacilitiesResponse(
+      success: json['success'] ?? false,
+      data: parsedData,
+      message: json['message'] ?? '',
+    );
+  }
 }

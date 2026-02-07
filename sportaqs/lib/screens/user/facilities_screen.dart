@@ -26,10 +26,10 @@ class FacilitiesScreen extends StatelessWidget {
     return Stack(
       children: [
         RefreshIndicator(
-          onRefresh: facilityProvider.getFacilities,
+          onRefresh: facilityProvider.getFacilitiesForUsers,
           child: ListView(
             physics: const AlwaysScrollableScrollPhysics(),
-            children: facilityProvider.facilities.isEmpty
+            children: facilityProvider.facilitiesForUsers.isEmpty
                 ? [
                     SizedBox(
                       height: MediaQuery.of(context).size.height - 100,
@@ -38,7 +38,7 @@ class FacilitiesScreen extends StatelessWidget {
                       ),
                     ),
                   ]
-                  : facilityProvider.facilities.map(
+                  : facilityProvider.facilitiesForUsers.map(
                       (facility) => FacilityCard(
                         facility: facility,
                         onTap: () {

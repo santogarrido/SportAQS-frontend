@@ -5,6 +5,7 @@ class FieldWidget extends StatelessWidget {
   final Icon prefixIcon;
   final TextEditingController? controller;
   final TextInputType keyboardType;
+  final bool hasBorder;
 
   const FieldWidget({
     super.key,
@@ -12,6 +13,7 @@ class FieldWidget extends StatelessWidget {
     required this.prefixIcon,
     this.controller,
     this.keyboardType = TextInputType.text,
+    this.hasBorder = false,
   });
 
   @override
@@ -26,7 +28,21 @@ class FieldWidget extends StatelessWidget {
         fillColor: Colors.white,
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide.none,
+          borderSide: hasBorder
+              ? const BorderSide(color: Colors.black, width: 1.5)
+              : BorderSide.none, // si no hay borde, nada
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: hasBorder
+              ? const BorderSide(color: Colors.black, width: 1.5)
+              : BorderSide.none,
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: hasBorder
+              ? const BorderSide(color: Colors.black, width: 2)
+              : BorderSide.none,
         ),
       ),
     );

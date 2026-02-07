@@ -10,6 +10,7 @@ class FacilityProvider extends ChangeNotifier{
   final UserProvider userProvider;
 
   List<Facility> facilities = [];
+  List<Facility> facilitiesForUsers = [];
   bool isLoading = false;
   String? errorMessage;
 
@@ -44,6 +45,36 @@ class FacilityProvider extends ChangeNotifier{
     }
   }
 
+    Future<void> getFacilitiesForUsers() async {
+    try{
+      isLoading = true;
+      errorMessage = null;
+      notifyListeners();
+
+      final token = userProvider.activeUser?.token;
+
+      if(token == null){
+        errorMessage = "No hay usuario autenticado";
+        return;
+      }
+
+      FacilitiesResponse response = await _facilityService.getFacilities(token);
+
+      if(response.success == true){
+        facilitiesForUsers = response.data;
+        facilitiesForUsers.removeWhere((f) => f.activated != true);
+      }else{
+        errorMessage = response.message;
+      }
+
+    }catch(e){
+      errorMessage = "Error inesperado $e";
+    }finally{
+      isLoading = false;
+      notifyListeners();
+    }
+  }
+
   Future<void> getFacilityById(int id) async {
     try{
       isLoading = true;
@@ -62,7 +93,7 @@ class FacilityProvider extends ChangeNotifier{
       if(response.success == true){
         facilities = response.data;
       }else {
-        errorMessage == response.message;
+        errorMessage = response.message;
       }
 
     }catch(e){
@@ -89,13 +120,14 @@ class FacilityProvider extends ChangeNotifier{
       FacilitiesResponse response = await _facilityService.addFacility(name, openTime, closeTime, location, token);
 
       if(response.success == true){
-        facilities = response.data;
+        
+        await getFacilities();
       }else {
-        errorMessage == response.message;
+        errorMessage = response.message;
       }
 
     }catch(e){
-      errorMessage == "Error inesperado $e";
+      errorMessage = "Error inesperado $e";
     }finally{
       isLoading = false;
       notifyListeners();      
@@ -120,11 +152,11 @@ class FacilityProvider extends ChangeNotifier{
       if(response.success == true){
         facilities = response.data;
       }else {
-        errorMessage == response.message;
+        errorMessage = response.message;
       }
 
     }catch(e){
-      errorMessage == "Error inesperado $e";
+      errorMessage = "Error inesperado $e";
     }finally{
       isLoading = false;
       notifyListeners();      
@@ -149,11 +181,11 @@ class FacilityProvider extends ChangeNotifier{
       if(response.success == true){
         facilities = response.data;
       }else {
-        errorMessage == response.message;
+        errorMessage = response.message;
       }
 
     }catch(e){
-      errorMessage == "Error inesperado $e";
+      errorMessage = "Error inesperado $e";
     }finally{
       isLoading = false;
       notifyListeners();      
@@ -178,11 +210,11 @@ class FacilityProvider extends ChangeNotifier{
       if(response.success == true){
         facilities = response.data;
       }else {
-        errorMessage == response.message;
+        errorMessage = response.message;
       }
 
     }catch(e){
-      errorMessage == "Error inesperado $e";
+      errorMessage = "Error inesperado $e";
     }finally{
       isLoading = false;
       notifyListeners();      
@@ -207,11 +239,11 @@ class FacilityProvider extends ChangeNotifier{
       if(response.success == true){
         facilities = response.data;
       }else {
-        errorMessage == response.message;
+        errorMessage = response.message;
       }
 
     }catch(e){
-      errorMessage == "Error inesperado $e";
+      errorMessage = "Error inesperado $e";
     }finally{
       isLoading = false;
       notifyListeners();      
