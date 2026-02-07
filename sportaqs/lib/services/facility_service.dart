@@ -41,7 +41,7 @@ class FacilityService {
 
     final response = await http.post(
       url,
-      body: ({'name' : name, 'openTime' : openTime, 'closeTime' : closeTime, 'location' : location}),
+      body: json.encode({'name' : name, 'openTime' : openTime, 'closeTime' : closeTime, 'location' : location}),
       headers: {'Accept' : 'application/json', 'Authorization' : 'Bearer $token' , 'Content-Type' : 'application/json'}
     );
 
@@ -98,9 +98,11 @@ class FacilityService {
 
     final response = await http.put(
       url,
+      body: json.encode({'name' : name, 'openTime' : openTime, 'closeTime' : closeTime, 'location' : location}),
       headers: {'Accept' : 'application/json', 'Authorization' : 'Bearer $token' , 'Content-Type' : 'application/json'}
     );
 
+    
     final facilityResponse = FacilitiesResponse.fromJson(json.decode(response.body));
 
     return facilityResponse;
