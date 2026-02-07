@@ -21,7 +21,7 @@ class AdminUserCard extends StatelessWidget {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(12),
           side: BorderSide(
-            color: user.activated
+            color: user.activated == true
                 ? Colors.lightBlueAccent
                 : Colors.grey,
             width: 1.5,
@@ -45,9 +45,9 @@ class AdminUserCard extends StatelessWidget {
                     ),
                   ),
                   Text(
-                    user.activated ? "Activo" : "Inactivo",
+                    user.activated == true? "Active" : "Inactive",
                     style: TextStyle(
-                      color: user.activated ? Colors.green : Colors.red,
+                      color: user.activated == true ? Colors.green : Colors.red,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
@@ -60,7 +60,7 @@ class AdminUserCard extends StatelessWidget {
                 children: [
                   const Icon(Icons.email, size: 18),
                   const SizedBox(width: 6),
-                  Expanded(child: Text(user.email)),
+                  Expanded(child: Text(user.email ?? 'User without mail')),
                 ],
               ),
             ],

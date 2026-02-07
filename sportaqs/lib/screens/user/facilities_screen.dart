@@ -6,9 +6,14 @@ import 'package:sportaqs/screens/user/courts_screen.dart';
 //import 'package:sportaqs/providers/user_provider.dart';
 import 'package:sportaqs/widgets/facility_card.dart';
 
-class FacilitiesScreen extends StatelessWidget {
+class FacilitiesScreen extends StatefulWidget {
   const FacilitiesScreen({super.key});
 
+  @override
+  State<FacilitiesScreen> createState() => _FacilitiesScreenState();
+}
+
+class _FacilitiesScreenState extends State<FacilitiesScreen> {
   @override
   Widget build(BuildContext context) {
 
