@@ -168,12 +168,14 @@ class _AdminCourtsScreenState extends State<AdminCourtsScreen> {
       ),
       floatingActionButton: FloatingActionButton(
         heroTag: null,
-        onPressed: () {
-          Navigator.of(context).push(
+        onPressed: () async {
+          await Navigator.of(context).push(
             MaterialPageRoute(
               builder: (context) => AdminCreateCourtScreen(facility: widget.facility)
             )
           );
+
+          await courtProvider.getCourts(widget.facility.id);
         },
         backgroundColor: const Color.fromARGB(255, 0, 229, 255),
         child: const Icon(Icons.add),
