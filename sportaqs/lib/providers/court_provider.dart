@@ -11,6 +11,7 @@ class CourtProvider extends ChangeNotifier{
   final UserProvider userProvider;
 
   List<Court> courts = [];
+  List<Court> courtsForUsers = [];
   bool isLoading = false;
   String? errorMessage;
 
@@ -34,6 +35,38 @@ class CourtProvider extends ChangeNotifier{
 
       if(response.success == true){
         courts = response.data;
+      }else{
+        errorMessage = response.message;
+      }
+
+    }catch(e){
+      errorMessage = "Error inesperado $e";
+    }finally{
+      isLoading = false;
+      notifyListeners();
+    }
+
+  }
+
+    Future<void> getCourtsForUsers(int id) async {
+
+    try{
+      isLoading = true;
+      errorMessage = null;
+      notifyListeners();
+
+      final token = userProvider.activeUser?.token;
+
+      if(token == null){
+        errorMessage = "No hay usuario autenticado";
+        return;
+      }
+
+      CourtsResponse response = await _courtService.getCourts(id, token);
+
+      if(response.success == true){
+        courtsForUsers = response.data;
+        courtsForUsers.removeWhere((c) => c.activated == false);
       }else{
         errorMessage = response.message;
       }

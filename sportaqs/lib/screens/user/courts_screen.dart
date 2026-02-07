@@ -29,7 +29,7 @@ class _CourtsScreenState extends State<CourtsScreen> {
       Provider.of<CourtProvider>(
         context,
         listen: false,
-      ).getCourts(widget.facility.id);
+      ).getCourtsForUsers(widget.facility.id);
     });
   }
 
@@ -45,7 +45,7 @@ class _CourtsScreenState extends State<CourtsScreen> {
       return Scaffold(body: Center(child: Text(courtProvider.errorMessage!)));
     }
 
-    final courts = courtProvider.courts
+    final courts = courtProvider.courtsForUsers
         .where((c) => c.facilityId == widget.facility.id)
         .toList();
 
@@ -56,7 +56,7 @@ class _CourtsScreenState extends State<CourtsScreen> {
         title: Text(widget.facility.name),
       ),
       body: RefreshIndicator(
-        onRefresh: () => courtProvider.getCourts(widget.facility.id),
+        onRefresh: () => courtProvider.getCourtsForUsers(widget.facility.id),
         child: ListView(
           physics: const AlwaysScrollableScrollPhysics(),
           children: courts.isEmpty
