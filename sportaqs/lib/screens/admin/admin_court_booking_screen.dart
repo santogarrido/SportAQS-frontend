@@ -44,11 +44,25 @@ class _AdminCourtBookingScreenState extends State<AdminCourtBookingScreen> {
         bookingService: _bookingService(),
         getBookingStream: _getBookingStream,
         uploadBooking: _uploadBooking,
-        convertStreamResultToDateTimeRanges: _convertStreamResultToDateTimeRanges,
+        convertStreamResultToDateTimeRanges:
+            _convertStreamResultToDateTimeRanges,
         lastDay: DateTime.now().add(const Duration(days: 7)),
         loadingWidget: const Center(child: CircularProgressIndicator()),
         uploadingWidget: const Center(child: CircularProgressIndicator()),
       ),
+    );
+  }
+
+  DateTime _timeStringToDateTime(String time) {
+    final parts = time.split(':');
+    final now = DateTime.now();
+
+    return DateTime(
+      now.year,
+      now.month,
+      now.day,
+      int.parse(parts[0]),
+      int.parse(parts[1]),
     );
   }
 
@@ -111,11 +125,31 @@ class _AdminCourtBookingScreenState extends State<AdminCourtBookingScreen> {
   List<DateTimeRange> _convertStreamResultToDateTimeRanges({
     required dynamic streamResult,
   }) {
+    final List<DateTimeRange> blockedRanges = [];
     final bookings = streamResult as List;
-    return bookings.map<DateTimeRange>((b) {
+    final now = DateTime.now();
+
+    // Existing bookings
+    for (final b in bookings) {
       final start = b.courtDateTimeBooking;
       final end = start.add(Duration(minutes: widget.court.bookingDuration));
-      return DateTimeRange(start: start, end: end);
-    }).toList();
+
+      blockedRanges.add(DateTimeRange(start: start, end: end));
+    }
+
+    // Block past hours
+    final opening = _timeStringToDateTime(widget.facility.openTime);
+    final closing = _timeStringToDateTime(widget.facility.closeTime);
+
+    DateTime cursor = opening;
+
+    while (cursor.isBefore(now) && cursor.isBefore(closing)) {
+      final end = cursor.add(Duration(minutes: widget.court.bookingDuration));
+
+      blockedRanges.add(DateTimeRange(start: cursor, end: end));
+      cursor = end;
+    }
+
+    return blockedRanges;
   }
 }
