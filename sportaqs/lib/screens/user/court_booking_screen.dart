@@ -88,8 +88,21 @@ class _CourtBookingScreenState extends State<CourtBookingScreen> {
 
   //Create the book at the selected time
   Future<dynamic> _uploadBooking({required BookingService newBooking}) async {
-    final bookingDateTime = DateTime.now();
+    final now = DateTime.now();
     final courtDateTimeBooking = newBooking.bookingStart;
+
+    if (courtDateTimeBooking.isBefore(now)) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("A past hour can't be booked"),
+          backgroundColor: Colors.redAccent,
+          duration: Duration(seconds: 2),
+        ),
+      );
+      return false;
+    }
+
+    final bookingDateTime = DateTime.now();
 
     await bookingProvider.addBooking(
       userId: widget.user.id!,
@@ -114,13 +127,33 @@ class _CourtBookingScreenState extends State<CourtBookingScreen> {
   List<DateTimeRange> _convertStreamResultToDateTimeRanges({
     required dynamic streamResult,
   }) {
+    final List<DateTimeRange> blockedRanges = [];
     final bookings = streamResult as List;
 
-    return bookings.map<DateTimeRange>((b) {
+    final now = DateTime.now();
+
+    // Existing bookings
+    for (final b in bookings) {
       final start = b.courtDateTimeBooking;
       final end = start.add(Duration(minutes: widget.court.bookingDuration));
 
-      return DateTimeRange(start: start, end: end);
-    }).toList();
+      blockedRanges.add(DateTimeRange(start: start, end: end));
+    }
+
+    // Block past hours
+    final opening = _timeStringToDateTime(widget.facility.openTime);
+    final closing = _timeStringToDateTime(widget.facility.closeTime);
+
+    DateTime cursor = opening;
+
+    while (cursor.isBefore(now) && cursor.isBefore(closing)) {
+      final end = cursor.add(Duration(minutes: widget.court.bookingDuration));
+
+      blockedRanges.add(DateTimeRange(start: cursor, end: end));
+
+      cursor = end;
+    }
+
+    return blockedRanges;
   }
 }

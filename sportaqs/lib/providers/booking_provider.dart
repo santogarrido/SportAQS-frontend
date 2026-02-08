@@ -10,6 +10,7 @@ class BookingProvider extends ChangeNotifier {
   String? errorMessage;
   bool loading = false;
   List<Booking> bookings = [];
+  List<Booking> myBookings = [];
 
   BookingProvider(this.bookingService, this.userProvider);
 
@@ -111,11 +112,11 @@ class BookingProvider extends ChangeNotifier {
       );
 
       if (response.success && response.data != null) {
-        bookings = (response.data as List)
+        myBookings = (response.data as List)
             .map((e) => Booking.fromJson(e))
             .toList();
       } else {
-        bookings = [];
+        myBookings = [];
         errorMessage = response.message;
       }
     } catch (e) {
@@ -150,6 +151,7 @@ class BookingProvider extends ChangeNotifier {
       if (response.success && response.data != null) {
         final newBooking = Booking.fromJson(response.data);
         bookings.add(newBooking);
+        myBookings.add(newBooking);
         notifyListeners();
       } else {
         errorMessage = response.message;
@@ -177,6 +179,7 @@ class BookingProvider extends ChangeNotifier {
 
       if (response.success) {
         bookings.removeWhere((b) => b.id == bookingId);
+        myBookings.removeWhere((b) => b.id == bookingId);
         notifyListeners();
       } else {
         errorMessage = response.message;

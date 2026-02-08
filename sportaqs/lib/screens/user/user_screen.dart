@@ -76,19 +76,19 @@ class _UserScreenState extends State<UserScreen> {
 
       //Bottom navbar
       bottomNavigationBar: BottomNavigationBar(
-        type: BottomNavigationBarType.fixed,  //para que no cambie a shifting
+        type: BottomNavigationBarType.fixed,
         currentIndex: currentIndex,
         onTap: (index) => setState(() => currentIndex = index),
         items: [
           BottomNavigationBarItem(
-            icon: Icon(Icons.home_outlined),
-            activeIcon: Icon(Icons.home),
-            label: 'Home',
+            icon: Icon(Icons.sports_tennis_outlined),
+            activeIcon: Icon(Icons.sports_tennis),
+            label: 'Facilities',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.event_outlined),
-            activeIcon: Icon(Icons.event),
-            label: 'Events',
+            icon: Icon(Icons.note_outlined),
+            activeIcon: Icon(Icons.note),
+            label: 'My Bookings',
           )
         ],
         backgroundColor: Color.fromARGB(255, 0, 229, 255),
